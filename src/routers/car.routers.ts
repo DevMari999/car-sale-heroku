@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 
 import { carController } from "../controller/car.controller";
-import { authMiddleware } from "../middleware/auth.middleware";
 
-const carRoutes = Router();
+const router = express.Router();
 
-carRoutes.post("/new-car", authMiddleware, carController.createCar);
-export { carRoutes };
+router.post("/create-car", carController.createCar);
+router.get("/all-cars", carController.getAllCars);
+export default router;

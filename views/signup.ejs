@@ -1,6 +1,6 @@
 <%- include('partials/header'); -%>
 
-<form action="/signup" method="POST">
+<form action="/users/new-user" method="POST">
   <h2>Sign up</h2>
   <label for="username">Username</label>
   <input type="text" name="username" required />
@@ -33,7 +33,7 @@
     const role = form.role.value;
 
     try {
-      const res = await fetch('/signup', {
+      const res = await fetch('/users/new-user', {
         method: 'POST',
         body: JSON.stringify({ username, email, password, role }),
         headers: {'Content-Type': 'application/json'}

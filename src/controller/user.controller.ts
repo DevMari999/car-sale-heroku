@@ -1,32 +1,46 @@
 import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
+import { configs } from "../configs/configs";
 import { UserRole } from "../enums/user.enum";
 import User from "../models/User.model";
-import { IUser } from "../types/user.types";
 
 class UserController {
-  public async newUser(
+  public async createManager(
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<Response<IUser>> {
-    try {
-      const { username, email, role, password } = req.body;
+  ): Promise<Response> {
+    const token = req.cookies.token;
 
-      if (role !== UserRole.BUYER && role !== UserRole.SELLER) {
-        return res.status(400).json({
-          error: "Invalid role. Allowed roles are 'buyer' or 'seller'",
-        });
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    try {
+      const decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
+        userId: string;
+        role: UserRole;
+      };
+
+      if (decodedToken.role !== UserRole.ADMINISTRATOR) {
+        return res.status(403).json({ error: "Access denied" });
       }
 
-      const newUser = await User.create({ username, email, role, password });
+      const { username, email, password } = req.body;
+      await User.create({
+        username,
+        email,
+        password,
+        role: UserRole.MANAGER,
+        premium: true,
+      });
 
-      // Return the newly created user
-      return res.status(201).json(newUser);
-    } catch (e) {
-      console.error("Error creating user:", e); // Log the error
-      res.status(500).json({ error: "Failed to create user" });
-      next(e);
+      return res.status(201).json({ message: "Manager user created" });
+    } catch (error) {
+      console.error("Error creating manager user:", error);
+      res.status(500).json({ error: "Failed to create manager user" });
+      next(error);
     }
   }
 }

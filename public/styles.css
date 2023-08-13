@@ -1,16 +1,22 @@
 /* google fonts */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 body{
-    margin: 20px 40px;
     font-size: 1.2rem;
     letter-spacing: 1px;
     background: #fafafa;
     height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 h1, h2, h3, h4, ul, li, a, p, input, label, button, div, footer{
-    margin: 0;
-    padding: 0;
     font-family: 'Quicksand', sans-serif;
     color: #444;
 }
@@ -23,32 +29,40 @@ a{
 nav{
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 120px;
+    align-items: center;
+    margin-bottom: 50px;
+    padding: 30px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #fafafa;
 }
 nav ul{
     display: flex;
-    align-items: center;
 }
 nav li{
     margin-left: 20px;
 }
+
+nav h1 {
+    font-size: 0.8em;
+}
 nav li a{
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 0.8em;
+    font-size: 0.7em;
     display: block;
     padding: 10px 16px;
     letter-spacing: 2px;
 }
 .btn{
-    border-radius: 36px;
+    border-radius: 20px;
     background: #FEE996;
 }
 form h2{
-    font-size: 2.4em;
+    font-size: 1.3em;
     font-weight: 900;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 form{
     width: 360px;
@@ -59,7 +73,7 @@ form{
     background: white;
 }
 input{
-    padding: 10px 12px;
+    padding: 5px 6px;
     border-radius: 4px;
     border: 1px solid #ddd;
     font-size: 1em;
@@ -71,12 +85,12 @@ label{
 }
 button{
     margin-top: 30px;
-    border-radius: 36px;
+    border-radius: 10px;
     background: #FEE996;
     border:0;
     text-transform: uppercase;
     font-weight: 700;
-    font-size: 0.8em;
+    font-size: 0.6em;
     display: block;
     padding: 10px 16px;
     letter-spacing: 2px;
@@ -87,20 +101,22 @@ button{
     font-size: 0.8em;
     font-weight: bold;
 }
-header{
+.header{
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }
 header img{
     width: 250px;
     margin-right: 40px;
 }
 header h2{
-    font-size: 3em;
+    font-size: 1.5em;
     margin-bottom: 10px;
 }
 header h3{
-    font-size: 1.6em;
+    font-size: 1em;
     margin-bottom: 10px;
     margin-left: 2px;
     color: #999;
@@ -113,25 +129,45 @@ header .btn{
     display: inline-block;
     font-size: 0.8em;
 }
-.recipes{
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    column-gap: 30px;
-    row-gap: 80px;
-    margin: 80PX AUTO;
-    max-width: 1200px;
+.all-cars-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
 }
-.recipe{
-    display: inline-block;
-    border-radius: 20px;
-    background: white;
-    position: relative;
-    text-align: center;
-    padding: 0 20px 30px 20px
+
+.all-cars {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: row;
+    width: 100%;
+
 }
-.recipe img{
-    width: 100px;
-    margin: -30px auto 20px;
+.welcome {
+    font-size: 20px;
+    font-weight: bold;
+    color: #ff0099;
+}
+.car {
+    background: #FEE996;
+    border-radius: 10px;
+    margin: 20px;
+    flex: 0 0 calc(43.33% - 20px);
+    height: 25vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+.car h2 {
+    font-size: 25px;
+}
+.car p {
+    font-size: 22px;
 }
 footer{
     align-items: center;
@@ -139,9 +175,11 @@ footer{
     justify-content: center;
     margin-top: 120px;
     color: #aaa;
-    position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 30px;
+    padding: 20px;
+    position: fixed;
+    background: #fafafa;
+    font-size: 0.7em;
 
 }

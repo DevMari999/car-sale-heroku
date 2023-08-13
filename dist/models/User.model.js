@@ -22,18 +22,36 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const mongoose_1 = __importStar(require("mongoose"));
 const user_enum_1 = require("../enums/user.enum");
 const userSchema = new mongoose_1.Schema({
     username: { type: String, required: true },
-    email: { type: String, required: true },
+    email: {
+        type: String,
+        required: true,
+        lowercase: true,
+    },
     role: {
         type: String,
         enum: Object.values(user_enum_1.UserRole),
         required: true,
     },
+    premium: { type: Boolean, default: false },
+    ads: { type: Number, default: 0 },
     password: { type: String, required: true },
+}, {
+    versionKey: false,
+    timestamps: true,
+});
+userSchema.pre("save", async function (next) {
+    const salt = await bcrypt_1.default.genSalt();
+    this.password = await bcrypt_1.default.hash(this.password, salt);
+    next();
 });
 const User = mongoose_1.default.model("User", userSchema);
 exports.default = User;

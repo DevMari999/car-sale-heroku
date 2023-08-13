@@ -2,11 +2,19 @@ import mongoose, { Schema } from "mongoose";
 
 import { ICar } from "../types/car.types";
 
-const carSchema = new Schema<ICar>({
-  brand: { type: String, required: true },
-  model: { type: String, required: true },
-  year: { type: Number, required: true },
-});
+const carSchema = new Schema<ICar>(
+  {
+    brand: { type: String, required: true },
+    model: { type: String, required: true },
+    year: { type: Number, required: true },
+    price: { type: Number, required: true },
+    currency: { type: String, required: true },
+  },
+  {
+    versionKey: false,
+    timestamps: true,
+  },
+);
 
 const Car = mongoose.model<ICar>("Car", carSchema);
 

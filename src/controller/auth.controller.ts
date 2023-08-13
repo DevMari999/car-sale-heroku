@@ -3,9 +3,41 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { configs } from "../configs/configs";
+import { UserRole } from "../enums/user.enum";
 import User from "../models/User.model";
+import { IUser } from "../types/user.types";
 
 class AuthController {
+  public async newUser(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response<IUser>> {
+    try {
+      const { username, email, role, password } = req.body;
+
+      if (role !== UserRole.BUYER && role !== UserRole.SELLER) {
+        return res.status(400).json({
+          error: "Invalid role. Allowed roles are 'buyer' or 'seller'",
+        });
+      }
+
+      const newUser = await User.create({ username, email, role, password });
+      const token = jwt.sign(
+        { userId: newUser._id, role },
+        configs.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        },
+      );
+      res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+      return res.status(201).json({ user: newUser, token });
+    } catch (e) {
+      console.error("Error creating user:", e);
+      res.status(500).json({ error: "Failed to create user" });
+      next(e);
+    }
+  }
   public async login(
     req: Request,
     res: Response,
@@ -31,12 +63,27 @@ class AuthController {
         configs.JWT_SECRET,
         { expiresIn: "1h" },
       );
-
-      return res.status(200).json({ token });
+      res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+      return res.status(200).json({ user, token });
     } catch (e) {
       res.status(500).json({ error: "Login failed" });
       next(e);
     }
+  }
+  public async logOut(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    console.log("Logging out...");
+
+    res.cookie("token", "", { maxAge: 0 });
+
+    console.log("Cookie cleared.");
+
+    res.redirect("/");
+
+    console.log("Redirecting...");
   }
 }
 

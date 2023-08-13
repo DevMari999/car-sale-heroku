@@ -9,8 +9,20 @@
 <nav>
     <h1><a href="/">HOME</a></h1>
     <ul>
-            <li><a href="/logout">Log out</a></li>
+        <li><a href="/cars/all-cars">All Ads</a></li>
+        <% if (user) { %>
+            <% if (user.role === 'administrator') { %>
+                <li><a href="/create-manager">Create Manager</a></li>
+            <% } %>
+            <li><a href="/create-car">advertise</a></li>
+            <li class="welcome">Welcome, <%= user.username %></li>
+            <li><a href="/users/logout">Log out</a></li>
+        <% } else { %>
             <li><a href="/login">Log in</a></li>
             <li><a href="/signup" class="btn">Sign up</a></li>
+        <% } %>
     </ul>
+
+
+
 </nav>

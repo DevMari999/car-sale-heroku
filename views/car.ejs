@@ -1,0 +1,55 @@
+<%- include('partials/header'); -%>
+
+<form action="/cars/create-car" method="POST">
+    <h2>CREATE AN AD</h2>
+    <label for="brand">Brand</label>
+    <input type="text" name="brand" required />
+    <label for="model">Model</label>
+    <input type="text" name="model" required />
+<!--    <div class="email error"></div>-->
+    <label for="year">Year</label>
+    <input type="text" name="year" required />
+<!--    <div class="password error"></div>-->
+    <label for="price">Price</label>
+    <input type="text" name="price" required />
+    <label for="currency">Currency</label>
+    <select name="currency" required>
+        <option value="dollar">Dollar</option>
+        <option value="euro">Euro</option>
+    </select>
+
+    <button type="submit">Create</button>
+</form>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    const form = document.querySelector('form');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const brand = form.brand.value;
+        const model = form.model.value;
+        const year = form.year.value;
+        const currency = form.currency.value;
+        const price = form.price.value;
+
+        try {
+            const res = await fetch('/cars/create-car', {
+                method: 'POST',
+                body: JSON.stringify({ brand, model, year, currency, price }),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+
+            if (data.car) {
+                location.assign('/');
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    });
+</script>

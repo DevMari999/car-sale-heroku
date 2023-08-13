@@ -4,4 +4,6 @@ export interface ICar extends Document {
   brand: string;
   model: string;
   year: number;
+  price: number;
+  currency: string;
 }

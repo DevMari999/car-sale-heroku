@@ -1,0 +1,23 @@
+<!-- views/allCars.ejs -->
+
+<%- include('partials/header'); -%>
+
+<header class="all-cars-main">
+    <div class="header">
+        <h2>ALL ADS</h2>
+        <h3>List of All Cars</h3>
+    </div>
+    <div class="all-cars">
+
+        <% cars.forEach(car => { %>
+            <div class="car">
+                <h2><%= car.brand %></h2>
+                <h2> <%= car.model %></h2>
+                <p>Price: <%= car.price %> <%= car.currency %></p>
+                <p>Year: <%= car.year %></p>
+            </div>
+        <% }); %>
+    </div>
+</header>
+
+<%- include('partials/footer'); -%>

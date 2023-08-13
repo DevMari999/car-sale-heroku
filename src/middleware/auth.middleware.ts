@@ -1,35 +1,39 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import mongoose from "mongoose";
 
 import { configs } from "../configs/configs";
-import { UserRole } from "../enums/user.enum";
+import User from "../models/User.model";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    userRole: UserRole;
-  }
+interface DecodedToken extends JwtPayload {
+  id: string;
 }
 
-export const authMiddleware = (
+const checkUser = async (
   req: Request,
   res: Response,
   next: NextFunction,
-) => {
-  const token = req.header("x-auth-token");
+): Promise<void> => {
+  const token: string | undefined = req.cookies.token;
+
+  res.locals.user = null;
 
   if (!token) {
-    return res.status(401).json({ msg: "No token, authorization denied" });
+    next();
+    return;
   }
 
   try {
-    const decoded = jwt.verify(token, configs.JWT_SECRET) as {
-      userId: string;
-      role: UserRole;
-    };
+    const decodedToken = jwt.verify(token, configs.JWT_SECRET) as DecodedToken;
 
-    req.userRole = decoded.role; // Set the user's role as a custom property
+    const userId = new mongoose.Types.ObjectId(decodedToken.userId);
+    const user = await User.findById(userId);
+
+    res.locals.user = user;
+  } catch (error) {
+  } finally {
     next();
-  } catch (err) {
-    res.status(401).json({ msg: "Token is not valid" });
   }
 };
+
+export { checkUser };
