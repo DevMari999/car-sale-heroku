@@ -43,6 +43,58 @@ class UserController {
       next(error);
     }
   }
+
+  public async upgradeToPremium(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const token = req.cookies.token;
+
+      let decodedToken: { userId: string; role: UserRole };
+      try {
+        decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
+          userId: string;
+          role: UserRole;
+        };
+      } catch (error) {
+        res.status(401).json({ error: "Invalid or expired token" });
+      }
+
+      const userRole = decodedToken.role;
+
+      if (userRole !== UserRole.SELLER) {
+        res.status(403).json({ error: "Only sellers can upgrade to premium" });
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(
+        decodedToken.userId,
+        { premium: true },
+        { new: true },
+      );
+
+      const updatedToken = jwt.sign(
+        {
+          userId: updatedUser._id,
+          role: updatedUser.role,
+          ads_count: updatedUser.ads_count,
+          premium: updatedUser.premium,
+        },
+        configs.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        },
+      );
+
+      res.cookie("token", updatedToken, { maxAge: 3600000, httpOnly: true });
+      res.redirect("/");
+    } catch (error) {
+      console.error("Error upgrading to premium:", error);
+      res.status(500).json({ error: "Failed to upgrade to premium" });
+      next(error);
+    }
+  }
 }
 
 export const userController = new UserController();

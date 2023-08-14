@@ -10,5 +10,6 @@ const router = express_1.default.Router();
 router.post("/new-user", auth_controller_1.authController.newUser);
 router.post("/login", auth_controller_1.authController.login);
 router.get("/logout", auth_controller_1.authController.logOut);
+router.get("/upgrade", user_controller_1.userController.upgradeToPremium);
 router.post("/create-manager", user_controller_1.userController.createManager);
 exports.default = router;

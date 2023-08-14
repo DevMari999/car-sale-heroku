@@ -10,15 +10,20 @@
     <label for="year">Year</label>
     <input type="text" name="year" required />
 <!--    <div class="password error"></div>-->
+    <div>
     <label for="price">Price</label>
     <input type="text" name="price" required />
     <label for="currency">Currency</label>
-    <select name="currency" required>
+    <select class="currency" name="currency" required>
         <option value="dollar">Dollar</option>
         <option value="euro">Euro</option>
     </select>
-
+        <label for="region">Region</label>
+        <input type="text" name="region" required />
+    <label for="price">Description</label>
+    <input type="text" name="description" required />
     <button type="submit">Create</button>
+    </div>
 </form>
 
 <%- include('partials/footer'); -%>
@@ -34,11 +39,13 @@
         const year = form.year.value;
         const currency = form.currency.value;
         const price = form.price.value;
+        const description = form.description.value;
+        const region = form.region.value;
 
         try {
             const res = await fetch('/cars/create-car', {
                 method: 'POST',
-                body: JSON.stringify({ brand, model, year, currency, price }),
+                body: JSON.stringify({ brand, model, year, currency, price, description, region }),
                 headers: {'Content-Type': 'application/json'}
             });
             const data = await res.json();

@@ -24,12 +24,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const viewEventSchema = new mongoose_1.Schema({
+    timestamp: { type: Date, default: Date.now },
+}, { _id: false });
 const carSchema = new mongoose_1.Schema({
     brand: { type: String, required: true },
     model: { type: String, required: true },
     year: { type: Number, required: true },
     price: { type: Number, required: true },
     currency: { type: String, required: true },
+    description: { type: String, required: true },
+    views: { type: Number, default: 0 },
+    region: { type: String, required: true },
+    created_by: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "User" },
+    viewEvents: [viewEventSchema],
 }, {
     versionKey: false,
     timestamps: true,

@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 import { UserRole } from "../enums/user.enum";
 
@@ -8,5 +8,7 @@ export interface IUser extends Document {
   role: UserRole;
   password: string;
   premium: boolean;
-  ads: number;
+  ads_count: number;
+  ads_created: mongoose.Types.ObjectId[];
+  message: mongoose.Types.ObjectId;
 }

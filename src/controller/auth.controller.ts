@@ -22,14 +22,26 @@ class AuthController {
         });
       }
 
-      const newUser = await User.create({ username, email, role, password });
+      const ads_count = 0;
+      const premium = false;
+
+      const newUser = await User.create({
+        username,
+        email,
+        role,
+        password,
+        ads_count,
+        premium,
+      });
+
       const token = jwt.sign(
-        { userId: newUser._id, role },
+        { userId: newUser._id, role, ads_count, premium },
         configs.JWT_SECRET,
         {
           expiresIn: "1d",
         },
       );
+
       res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
       return res.status(201).json({ user: newUser, token });
     } catch (e) {
@@ -59,31 +71,33 @@ class AuthController {
       }
 
       const token = jwt.sign(
-        { userId: user._id, role: user.role },
+        {
+          userId: user._id,
+          role: user.role,
+          ads_count: user.ads_count,
+          premium: user.premium,
+        },
         configs.JWT_SECRET,
         { expiresIn: "1h" },
       );
+
       res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
+
       return res.status(200).json({ user, token });
     } catch (e) {
       res.status(500).json({ error: "Login failed" });
       next(e);
     }
   }
+
   public async logOut(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<void> {
-    console.log("Logging out...");
-
     res.cookie("token", "", { maxAge: 0 });
 
-    console.log("Cookie cleared.");
-
     res.redirect("/");
-
-    console.log("Redirecting...");
   }
 }
 

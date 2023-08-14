@@ -18,8 +18,17 @@ class AuthController {
                     error: "Invalid role. Allowed roles are 'buyer' or 'seller'",
                 });
             }
-            const newUser = await User_model_1.default.create({ username, email, role, password });
-            const token = jsonwebtoken_1.default.sign({ userId: newUser._id, role }, configs_1.configs.JWT_SECRET, {
+            const ads_count = 0;
+            const premium = false;
+            const newUser = await User_model_1.default.create({
+                username,
+                email,
+                role,
+                password,
+                ads_count,
+                premium,
+            });
+            const token = jsonwebtoken_1.default.sign({ userId: newUser._id, role, ads_count, premium }, configs_1.configs.JWT_SECRET, {
                 expiresIn: "1d",
             });
             res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
@@ -42,7 +51,12 @@ class AuthController {
             if (!isPasswordValid) {
                 return res.status(401).json({ error: "Invalid credentials" });
             }
-            const token = jsonwebtoken_1.default.sign({ userId: user._id, role: user.role }, configs_1.configs.JWT_SECRET, { expiresIn: "1h" });
+            const token = jsonwebtoken_1.default.sign({
+                userId: user._id,
+                role: user.role,
+                ads_count: user.ads_count,
+                premium: user.premium,
+            }, configs_1.configs.JWT_SECRET, { expiresIn: "1h" });
             res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
             return res.status(200).json({ user, token });
         }
@@ -52,11 +66,8 @@ class AuthController {
         }
     }
     async logOut(req, res, next) {
-        console.log("Logging out...");
         res.cookie("token", "", { maxAge: 0 });
-        console.log("Cookie cleared.");
         res.redirect("/");
-        console.log("Redirecting...");
     }
 }
 exports.authController = new AuthController();

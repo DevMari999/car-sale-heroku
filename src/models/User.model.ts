@@ -17,9 +17,11 @@ const userSchema = new Schema<IUser>(
       enum: Object.values(UserRole),
       required: true,
     },
+    ads_created: [{ type: mongoose.Schema.Types.ObjectId, ref: "Car" }],
     premium: { type: Boolean, default: false },
-    ads: { type: Number, default: 0 },
+    ads_count: { type: Number, default: 0 },
     password: { type: String, required: true },
+    message: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
   },
   {
     versionKey: false,

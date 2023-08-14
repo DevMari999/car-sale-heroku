@@ -4,6 +4,7 @@ import express from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs/configs";
+import { carController } from "./controller/car.controller";
 import { checkUser } from "./middleware/auth.middleware";
 import carRoutes from "./routers/car.routers";
 import userRoutes from "./routers/user.routers";
@@ -27,9 +28,9 @@ app.listen(configs.PORT, () => {
   console.log(`Server has started on PORT ${configs.PORT} 🥸`);
 });
 
-app.get("/", (req, res) => res.render("home"));
+app.get("/", carController.getAllCars);
 app.get("/signup", (req, res) => res.render("signup"));
 app.get("/login", (req, res) => res.render("login"));
-app.get("/create-car", (req, res) => res.render("car"));
-
+app.get("/create-car", (req, res) => res.render("create_car_ad"));
+app.get("/create-manager", (req, res) => res.render("create_manager"));
 app.get("/create-manager", (req, res) => res.render("create_manager"));
