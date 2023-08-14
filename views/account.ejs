@@ -1,0 +1,65 @@
+<%- include('partials/header'); -%>
+
+<header class="user">
+    <h2>Welcome, <%= user.username %></h2>
+</header>
+
+<% if (messages && messages.length > 0) { %>
+    <section class="messages-main">
+        <h3>Your Messages</h3>
+        <% messages.forEach(message => { %>
+            <div class="messages">
+                <div class="message-element">
+                <p>From: <%= message.send_by.username %></p>
+                <p>Subject: <%= message.header %></p>
+                <p>Message: <%= message.content %></p>
+                </div>
+                <div class="message-element">
+                <form class="contact" action="/messages/send" method="POST">
+                    <h2>Reply</h2>
+                    <label for="header">Subject</label>
+                    <input type="text" name="header" required/>
+                    <label for="content">Message</label>
+                    <textarea id="content" name="content" required></textarea>
+                    <input type="hidden" name="recipientUserId" value="<%= message.send_by._id %>">
+                    <button type="submit">Send a message</button>
+                </form>
+            </div>
+            </div>
+
+        <% }); %>
+    </section>
+<% } %>
+
+<%- include('partials/footer'); -%>
+
+<script>
+    const forms = document.querySelectorAll('form');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const header = form.header.value;
+            const content = form.content.value;
+            const recipientUserId = form.recipientUserId.value;
+
+            try {
+                const res = await fetch('/messages/send', {
+                    method: 'POST',
+                    body: JSON.stringify({ header, content, recipientUserId }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const data = await res.json();
+                console.log(data);
+
+                if (data.message) {
+                    alert("Message sent successfully!");
+                    form.reset();
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
+</script>

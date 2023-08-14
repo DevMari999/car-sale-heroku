@@ -156,13 +156,11 @@ class CarController {
         (event) => event.timestamp.getTime() >= oneMonthAgoTimestamp,
       ).length;
 
-      // Query to calculate average price by all
       const allCars = await Car.find();
       const averagePriceByAll =
         allCars.reduce((total, currentCar) => total + currentCar.price, 0) /
         allCars.length;
 
-      // Query to calculate average price by region
       const carsByRegion = await Car.find({ region: car.region });
       const averagePriceByRegion =
         carsByRegion.reduce(

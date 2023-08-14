@@ -7,6 +7,7 @@ exports.userController = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const configs_1 = require("../configs/configs");
 const user_enum_1 = require("../enums/user.enum");
+const Message_model_1 = __importDefault(require("../models/Message.model"));
 const User_model_1 = __importDefault(require("../models/User.model"));
 class UserController {
     async createManager(req, res, next) {
@@ -64,6 +65,26 @@ class UserController {
         catch (error) {
             console.error("Error upgrading to premium:", error);
             res.status(500).json({ error: "Failed to upgrade to premium" });
+            next(error);
+        }
+    }
+    async getUserById(req, res, next) {
+        try {
+            const token = req.cookies.token;
+            if (!token) {
+                res.status(401).json({ error: "Token not found" });
+            }
+            const decodedToken = jsonwebtoken_1.default.verify(token, configs_1.configs.JWT_SECRET);
+            const userId = decodedToken.userId;
+            const user = await User_model_1.default.findById(userId);
+            if (!user) {
+                res.status(404).json({ error: "User not found" });
+            }
+            const messages = await Message_model_1.default.find({ send_to: userId }).populate("send_by", "username");
+            res.render("account", { user, messages });
+        }
+        catch (error) {
+            res.status(500).json({ error: "Failed to get user" });
             next(error);
         }
     }

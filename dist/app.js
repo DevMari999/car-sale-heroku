@@ -34,6 +34,7 @@ const configs_1 = require("./configs/configs");
 const car_controller_1 = require("./controller/car.controller");
 const auth_middleware_1 = require("./middleware/auth.middleware");
 const car_routers_1 = __importDefault(require("./routers/car.routers"));
+const message_routes_1 = __importDefault(require("./routers/message.routes"));
 const user_routers_1 = __importDefault(require("./routers/user.routers"));
 const app = (0, express_1.default)();
 app.use(express_1.default.static("public"));
@@ -45,6 +46,7 @@ app.set("view engine", "ejs");
 app.get("*", auth_middleware_1.checkUser);
 app.use("/users", user_routers_1.default);
 app.use("/cars", car_routers_1.default);
+app.use("/messages", message_routes_1.default);
 app.listen(configs_1.configs.PORT, () => {
     mongoose.connect(configs_1.configs.DB_URL);
     console.log(`Server has started on PORT ${configs_1.configs.PORT} 🥸`);

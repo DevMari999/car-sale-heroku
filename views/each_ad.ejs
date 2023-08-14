@@ -1,6 +1,6 @@
 <%- include('partials/header'); -%>
-<div class="all-cars">
-    <div class="car">
+<div class="all-cars ">
+    <div class="car-each">
 
         <h2><%= car.brand %></h2>
         <h2><%= car.model %></h2>
@@ -9,19 +9,30 @@
         <p><b>Where:</b> <%= car.region %></p>
         <p><b>Description:</b> <%= car.description %></p>
         <p><b>Posted by:</b> <%= usersMap.get(car.created_by.toString()).username %></p>
-
-        <% if (user && (user.role === "manager" || user.role === "administrator" || user._id.equals(car.created_by._id))) { %>
-            <div>--------------------</div>
+        <% if (user && (user.premium === true && user._id.equals(car.created_by._id))) { %>
+            <div>-----------------------</div>
             <h3>Statistics:</h3>
             <p>Total Views: <%= totalViews %></p>
             <p>Views in the Past Week: <%= pastWeekViews %></p>
             <p>Views in the Past Month: <%= pastMonthViews %></p>
             <p>Average Price by All: <%= averagePriceByAll.toFixed(2) %></p>
             <p>Average Price by Region: <%= averagePriceByRegion.toFixed(2) %></p>
-
+        <% } %>
+        <% if (user && (user._id.equals(car.created_by._id))) { %>
             <button id="deleteButton">Delete</button>
         <% } %>
-        <button id="contact">Contact</button>
+
+        <% if (user && !(user._id.equals(car.created_by._id))) { %>
+            <div>-----------------------</div>
+            <form class="contact" action="/messages/send" method="POST">
+                <h2>CONTACT A SELLER</h2>
+                <label for="header">Subject</label>
+                <input type="text" name="header" required/>
+                <label for="content">Message</label>
+                <textarea id="content" name="content" required></textarea>
+                <button type="submit">Send a message</button>
+            </form>
+        <% } %>
     </div>
 
 </div>
@@ -50,6 +61,32 @@
                 });
         }
     });
-
 </script>
+<script>
+    const form = document.querySelector('form');
 
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const header = form.header.value;
+        const content = form.content.value;
+
+        try {
+            const res = await fetch('/messages/send', {
+                method: 'POST',
+                body: JSON.stringify({header, content, recipientUserId: "<%= car.created_by._id %>",}),
+                headers: {'Content-Type': 'application/json'}
+            });
+            const data = await res.json();
+            console.log(data);
+
+            if (data.message) {
+                alert("message send");
+                form.reset();
+            }
+
+        } catch (err) {
+            console.log(err);
+        }
+    });
+</script>

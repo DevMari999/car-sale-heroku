@@ -9,8 +9,8 @@ const messageSchema = new Schema<IMessage>(
       type: String,
       required: true,
     },
-    send_to: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    send_by: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    send_to: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    send_by: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   {
     versionKey: false,

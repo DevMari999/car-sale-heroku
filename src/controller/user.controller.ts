@@ -3,7 +3,9 @@ import jwt from "jsonwebtoken";
 
 import { configs } from "../configs/configs";
 import { UserRole } from "../enums/user.enum";
+import Message from "../models/Message.model";
 import User from "../models/User.model";
+import { IUser } from "../types/user.types";
 
 class UserController {
   public async createManager(
@@ -92,6 +94,42 @@ class UserController {
     } catch (error) {
       console.error("Error upgrading to premium:", error);
       res.status(500).json({ error: "Failed to upgrade to premium" });
+      next(error);
+    }
+  }
+  public async getUserById(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const token = req.cookies.token;
+
+      if (!token) {
+        res.status(401).json({ error: "Token not found" });
+      }
+
+      const decodedToken: { userId: string } = jwt.verify(
+        token,
+        configs.JWT_SECRET,
+      ) as { userId: string };
+
+      const userId = decodedToken.userId;
+
+      const user: IUser | null = await User.findById(userId);
+
+      if (!user) {
+        res.status(404).json({ error: "User not found" });
+      }
+
+      const messages = await Message.find({ send_to: userId }).populate(
+        "send_by",
+        "username",
+      );
+
+      res.render("account", { user, messages });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get user" });
       next(error);
     }
   }

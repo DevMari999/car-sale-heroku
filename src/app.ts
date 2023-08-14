@@ -7,6 +7,7 @@ import { configs } from "./configs/configs";
 import { carController } from "./controller/car.controller";
 import { checkUser } from "./middleware/auth.middleware";
 import carRoutes from "./routers/car.routers";
+import messageRoutes from "./routers/message.routes";
 import userRoutes from "./routers/user.routers";
 
 const app = express();
@@ -22,7 +23,7 @@ app.get("*", checkUser);
 
 app.use("/users", userRoutes);
 app.use("/cars", carRoutes);
-
+app.use("/messages", messageRoutes);
 app.listen(configs.PORT, () => {
   mongoose.connect(configs.DB_URL);
   console.log(`Server has started on PORT ${configs.PORT} 🥸`);
