@@ -9,10 +9,22 @@ const configs_1 = require("../configs/configs");
 const user_enum_1 = require("../enums/user.enum");
 const Car_model_1 = __importDefault(require("../models/Car.model"));
 const User_model_1 = __importDefault(require("../models/User.model"));
+const currency_service_1 = require("../services/currency.service");
 class CarController {
     async createCar(req, res, next) {
         try {
             const { brand, model, price, currency, year, region, description } = req.body;
+            const supportedCurrencies = ["dollar", "euro", "hryvnia"];
+            if (!supportedCurrencies.includes(currency)) {
+                return res.status(400).json({ error: "Invalid currency" });
+            }
+            const conversionRates = await (0, currency_service_1.fetchConversionRates)();
+            if (!conversionRates) {
+                return res
+                    .status(500)
+                    .json({ error: "Failed to fetch conversion rates" });
+            }
+            const { convertedCurrencies, buyRates, saleRates } = (0, currency_service_1.convertPrice)(price, currency, conversionRates);
             const token = req.cookies.token;
             let decodedToken;
             try {
@@ -43,6 +55,13 @@ class CarController {
                 created_by: decodedToken.userId,
                 region,
                 description,
+                convertedCurrencies,
+                currencyRate: {
+                    dollarBuy: buyRates["USD"].toString(),
+                    dollarSale: saleRates["USD"].toString(),
+                    euroBuy: buyRates["EUR"].toString(),
+                    euroSale: saleRates["EUR"].toString(),
+                },
             });
             const updatedUser = await User_model_1.default.findByIdAndUpdate(decodedToken.userId, {
                 $inc: { ads_count: 1 },

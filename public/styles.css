@@ -166,13 +166,14 @@ header .btn{
     align-items: center;
     flex-direction: column;
     width: 100%;
-
 }
 .premium {
     color: gold;
     font-weight: bold;
 }
-
+.divider {
+    color: #ff0099;
+}
 select {
    width: 100%;
     border: 1px solid #ddd;

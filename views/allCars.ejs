@@ -10,7 +10,7 @@
             <div class="car">
                 <h2><%= car.brand %></h2>
                 <h2><%= car.model %></h2>
-                <p><b>Price:</b> <%= car.price %> <%= car.currency %></p>
+                <p><b>Price:</b> <%= car.price %> <%= car.currency === "hryvnia" ? "UAH" : car.currency === "dollar" ? "USD" : "EUR"  %></p>
                 <p><b>Year:</b> <%= car.year %></p>
                 <p><b>Where:</b> <%= car.region %></p>
                 <p><b>Posted by:</b> <%= usersMap.get(car.created_by.toString()).username %></p>

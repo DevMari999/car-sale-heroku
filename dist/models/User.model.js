@@ -30,11 +30,12 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const mongoose_1 = __importStar(require("mongoose"));
 const user_enum_1 = require("../enums/user.enum");
 const userSchema = new mongoose_1.Schema({
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     email: {
         type: String,
         required: true,
         lowercase: true,
+        unique: true,
     },
     role: {
         type: String,
@@ -43,8 +44,9 @@ const userSchema = new mongoose_1.Schema({
     },
     ads_created: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "Car" }],
     premium: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
     ads_count: { type: Number, default: 0 },
-    password: { type: String, required: true },
+    password: { type: String, required: true, minlength: 6 },
     message: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "Message" },
 }, {
     versionKey: false,

@@ -35,9 +35,21 @@ const carSchema = new mongoose_1.Schema({
     currency: { type: String, required: true },
     description: { type: String, required: true },
     views: { type: Number, default: 0 },
+    active: { type: Boolean, default: true },
     region: { type: String, required: true },
     created_by: { type: mongoose_1.default.Schema.Types.ObjectId, ref: "User" },
     viewEvents: [viewEventSchema],
+    convertedCurrencies: {
+        dollar: { type: Number },
+        euro: { type: Number },
+        hryvnia: { type: Number },
+    },
+    currencyRate: {
+        dollarBuy: { type: String },
+        dollarSale: { type: String },
+        euroBuy: { type: String },
+        euroSale: { type: String },
+    },
 }, {
     versionKey: false,
     timestamps: true,

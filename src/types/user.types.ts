@@ -9,6 +9,7 @@ export interface IUser extends Document {
   password: string;
   premium: boolean;
   ads_count: number;
+  active: boolean;
   ads_created: mongoose.Types.ObjectId[];
   message: mongoose.Types.ObjectId;
 }

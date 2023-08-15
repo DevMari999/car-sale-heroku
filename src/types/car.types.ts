@@ -9,6 +9,18 @@ export interface ICar extends Document {
   currency: string;
   created_by: mongoose.Types.ObjectId;
   views: number;
+  active: boolean;
   region: string;
   viewEvents: { timestamp: Date }[];
+  convertedCurrencies: {
+    dollar: number;
+    euro: number;
+    hryvnia: number;
+  };
+  currencyRate: {
+    dollarBuy: string;
+    dollarSale: string;
+    euroBuy: string;
+    euroSale: string;
+  };
 }

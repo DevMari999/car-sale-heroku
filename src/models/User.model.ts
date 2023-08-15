@@ -6,11 +6,12 @@ import { IUser } from "../types/user.types";
 
 const userSchema = new Schema<IUser>(
   {
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     email: {
       type: String,
       required: true,
       lowercase: true,
+      unique: true,
     },
     role: {
       type: String,
@@ -19,8 +20,9 @@ const userSchema = new Schema<IUser>(
     },
     ads_created: [{ type: mongoose.Schema.Types.ObjectId, ref: "Car" }],
     premium: { type: Boolean, default: false },
+    active: { type: Boolean, default: true },
     ads_count: { type: Number, default: 0 },
-    password: { type: String, required: true },
+    password: { type: String, required: true, minlength: 6 },
     message: { type: mongoose.Schema.Types.ObjectId, ref: "Message" },
   },
   {

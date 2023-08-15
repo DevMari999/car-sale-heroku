@@ -5,7 +5,12 @@ import { configs } from "../configs/configs";
 import { UserRole } from "../enums/user.enum";
 import Car from "../models/Car.model";
 import User from "../models/User.model";
+import {
+  convertPrice,
+  fetchConversionRates,
+} from "../services/currency.service";
 import { ICar } from "../types/car.types";
+import { ConversionRate } from "../types/conversion.types";
 import { IUser } from "../types/user.types";
 
 class CarController {
@@ -18,6 +23,25 @@ class CarController {
       const { brand, model, price, currency, year, region, description } =
         req.body;
 
+      const supportedCurrencies = ["dollar", "euro", "hryvnia"];
+      if (!supportedCurrencies.includes(currency)) {
+        return res.status(400).json({ error: "Invalid currency" });
+      }
+
+      const conversionRates: ConversionRate[] = await fetchConversionRates();
+
+      if (!conversionRates) {
+        return res
+          .status(500)
+          .json({ error: "Failed to fetch conversion rates" });
+      }
+
+      const { convertedCurrencies, buyRates, saleRates } = convertPrice(
+        price,
+        currency,
+        conversionRates,
+      );
+
       const token = req.cookies.token;
 
       let decodedToken: {
@@ -26,6 +50,7 @@ class CarController {
         ads_count: number;
         premium: boolean;
       };
+
       try {
         decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
           userId: string;
@@ -62,6 +87,13 @@ class CarController {
         created_by: decodedToken.userId,
         region,
         description,
+        convertedCurrencies,
+        currencyRate: {
+          dollarBuy: buyRates["USD"].toString(),
+          dollarSale: saleRates["USD"].toString(),
+          euroBuy: buyRates["EUR"].toString(),
+          euroSale: saleRates["EUR"].toString(),
+        },
       });
 
       const updatedUser = await User.findByIdAndUpdate(
@@ -118,6 +150,7 @@ class CarController {
       next(error);
     }
   }
+
   public async getCarById(
     req: Request,
     res: Response,

@@ -1,16 +1,33 @@
 <%- include('partials/header'); -%>
 <div class="all-cars ">
     <div class="car-each">
+        <h2>Exchange rate</h2>
+        <p>$ buy: <%= car.currencyRate.dollarBuy %></p>
+        <p>$ sell: <%= car.currencyRate.dollarSale %></p>
+        <p>€ buy: <%= car.currencyRate.euroBuy %></p>
+        <p>€ sell: <%= car.currencyRate.euroSale %></p>
+    </div>
+    <div class="car-each">
 
         <h2><%= car.brand %></h2>
         <h2><%= car.model %></h2>
-        <p><b>Price:</b> <%= car.price %> <%= car.currency %></p>
+        <div class="divider">-----------------------</div>
+        <p><b><%= car.currency === "dollar" ? "Default Currency USD:" : "Price in USD: " %></b>
+            <%= car.convertedCurrencies.dollar.toFixed(2) %> $
+        </p>
+        <p><b><%= car.currency === "euro" ? "Default Currency EUR:" : "Price in EUR: " %></b>
+            <%= car.convertedCurrencies.euro.toFixed(2) %> €
+        </p>
+        <p><b><%= car.currency === "hryvnia" ? "Default Currency UAH:" : "Price in UAH: " %></b>
+            <%= car.convertedCurrencies.hryvnia.toFixed(2) %> ₴
+        </p>
+        <div class="divider">-----------------------</div>
         <p><b>Year:</b> <%= car.year %></p>
         <p><b>Where:</b> <%= car.region %></p>
         <p><b>Description:</b> <%= car.description %></p>
         <p><b>Posted by:</b> <%= usersMap.get(car.created_by.toString()).username %></p>
-        <% if (user && (user.premium === true && user._id.equals(car.created_by._id))) { %>
-            <div>-----------------------</div>
+        <% if (user && (user.premium === true && user._id.equals(car.created_by._id) || user.role === "administrator" || user.role === "manager")) { %>
+            <div class="divider">-----------------------</div>
             <h3>Statistics:</h3>
             <p>Total Views: <%= totalViews %></p>
             <p>Views in the Past Week: <%= pastWeekViews %></p>
@@ -18,12 +35,12 @@
             <p>Average Price by All: <%= averagePriceByAll.toFixed(2) %></p>
             <p>Average Price by Region: <%= averagePriceByRegion.toFixed(2) %></p>
         <% } %>
-        <% if (user && (user._id.equals(car.created_by._id))) { %>
-            <button id="deleteButton">Delete</button>
+        <% if (user && (user._id.equals(car.created_by._id) || user.role === "administrator" || user.role === "manager")) { %>
+            <button id="deleteButton">Delete ad</button>
         <% } %>
 
         <% if (user && !(user._id.equals(car.created_by._id))) { %>
-            <div>-----------------------</div>
+            <div class="divider">-----------------------</div>
             <form class="contact" action="/messages/send" method="POST">
                 <h2>CONTACT A SELLER</h2>
                 <label for="header">Subject</label>
