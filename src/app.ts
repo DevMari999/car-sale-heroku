@@ -4,11 +4,11 @@ import express from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs/configs";
-import { carController } from "./controller/car.controller";
 import { checkUser } from "./middleware/auth.middleware";
 import carRoutes from "./routers/car.routers";
 import messageRoutes from "./routers/message.routes";
 import userRoutes from "./routers/user.routers";
+import { carService } from "./services/car.service";
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.listen(configs.PORT, () => {
   console.log(`Server has started on PORT ${configs.PORT} 🥸`);
 });
 
-app.get("/", carController.getAllCars);
+app.get("/", carService.getAllCars);
 app.get("/signup", (req, res) => res.render("signup"));
 app.get("/login", (req, res) => res.render("login"));
 app.get("/create-car", (req, res) => res.render("create_car_ad"));

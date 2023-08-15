@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import mongoose from "mongoose";
 
 import { configs } from "../configs/configs";
+import { UserRole } from "../enums/user.enum";
 import User from "../models/User.model";
 
 interface DecodedToken extends JwtPayload {
@@ -36,4 +37,19 @@ const checkUser = async (
   }
 };
 
+export const validateUserRole = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const { role } = req.body;
+
+  if (role !== UserRole.BUYER && role !== UserRole.SELLER) {
+    return res.status(400).json({
+      error: "Invalid role. Allowed roles are 'buyer' or 'seller'",
+    });
+  }
+
+  next();
+};
 export { checkUser };

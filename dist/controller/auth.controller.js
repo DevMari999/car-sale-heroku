@@ -1,73 +1,41 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authController = void 0;
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const configs_1 = require("../configs/configs");
-const user_enum_1 = require("../enums/user.enum");
-const User_model_1 = __importDefault(require("../models/User.model"));
+const auth_service_1 = require("../services/auth.service");
 class AuthController {
-    async newUser(req, res, next) {
-        try {
-            const { username, email, role, password } = req.body;
-            if (role !== user_enum_1.UserRole.BUYER && role !== user_enum_1.UserRole.SELLER) {
-                return res.status(400).json({
-                    error: "Invalid role. Allowed roles are 'buyer' or 'seller'",
-                });
+    constructor() {
+        this.registerUser = async (req, res, next) => {
+            try {
+                const user = await auth_service_1.authService.newUser(req.body);
+                res.cookie("token", user.token, { maxAge: 3600000, httpOnly: true });
+                res.status(201).json(user);
             }
-            const ads_count = 0;
-            const premium = false;
-            const newUser = await User_model_1.default.create({
-                username,
-                email,
-                role,
-                password,
-                ads_count,
-                premium,
-            });
-            const token = jsonwebtoken_1.default.sign({ userId: newUser._id, role, ads_count, premium }, configs_1.configs.JWT_SECRET, {
-                expiresIn: "1d",
-            });
-            res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
-            return res.status(201).json({ user: newUser, token });
-        }
-        catch (e) {
-            console.error("Error creating user:", e);
-            res.status(500).json({ error: "Failed to create user" });
-            next(e);
-        }
-    }
-    async login(req, res, next) {
-        try {
-            const { email, password } = req.body;
-            const user = await User_model_1.default.findOne({ email });
-            if (!user) {
-                return res.status(401).json({ error: "Invalid credentials" });
+            catch (e) {
+                res.status(500).json({ error: e.message });
+                next(e);
             }
-            const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
-            if (!isPasswordValid) {
-                return res.status(401).json({ error: "Invalid credentials" });
+        };
+        this.loginUser = async (req, res, next) => {
+            try {
+                const user = await auth_service_1.authService.loginUser(req.body);
+                res.cookie("token", user.token, { maxAge: 3600000, httpOnly: true });
+                res.status(200).json(user);
             }
-            const token = jsonwebtoken_1.default.sign({
-                userId: user._id,
-                role: user.role,
-                ads_count: user.ads_count,
-                premium: user.premium,
-            }, configs_1.configs.JWT_SECRET, { expiresIn: "1h" });
-            res.cookie("token", token, { maxAge: 3600000, httpOnly: true });
-            return res.status(200).json({ user, token });
-        }
-        catch (e) {
-            res.status(500).json({ error: "Login failed" });
-            next(e);
-        }
-    }
-    async logOut(req, res, next) {
-        res.cookie("token", "", { maxAge: 0 });
-        res.redirect("/");
+            catch (e) {
+                if (e.message === "Invalid credentials") {
+                    res.status(401).json({ error: e.message });
+                }
+                else {
+                    res.status(500).json({ error: "Login failed" });
+                }
+                next(e);
+            }
+        };
+        this.logOutUser = (req, res) => {
+            const redirectPath = auth_service_1.authService.logoutUser();
+            res.cookie("token", "", { maxAge: 0 });
+            res.redirect(redirectPath);
+        };
     }
 }
 exports.authController = new AuthController();
