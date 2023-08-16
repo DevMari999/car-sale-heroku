@@ -4,16 +4,20 @@ export class CarRepository {
   static async getAveragePriceOfAllCars(): Promise<number> {
     const allCars = await Car.find();
     return (
-      allCars.reduce((total, currentCar) => total + currentCar.price, 0) /
-      allCars.length
+      allCars.reduce(
+        (total, currentCar) => total + currentCar.convertedCurrencies.dollar,
+        0,
+      ) / allCars.length
     );
   }
 
   static async getAveragePriceByRegion(region: string): Promise<number> {
     const carsByRegion = await Car.find({ region });
     return (
-      carsByRegion.reduce((total, currentCar) => total + currentCar.price, 0) /
-      carsByRegion.length
+      carsByRegion.reduce(
+        (total, currentCar) => total + currentCar.convertedCurrencies.dollar,
+        0,
+      ) / carsByRegion.length
     );
   }
 

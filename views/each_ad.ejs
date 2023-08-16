@@ -32,8 +32,8 @@
             <p>Total Views: <%= totalViews %></p>
             <p>Views in the Past Week: <%= pastWeekViews %></p>
             <p>Views in the Past Month: <%= pastMonthViews %></p>
-            <p>Average Price by All: <%= averagePriceByAll.toFixed(2) %></p>
-            <p>Average Price by Region: <%= averagePriceByRegion.toFixed(2) %></p>
+            <p>Average Price by All in USD: <%= averagePriceByAll.toFixed(2) %></p>
+            <p>Average Price by Region in USD: <%= averagePriceByRegion.toFixed(2) %></p>
         <% } %>
         <% if (user && (user._id.equals(car.created_by._id) || user.role === "administrator" || user.role === "manager")) { %>
             <button id="deleteButton">Delete ad</button>

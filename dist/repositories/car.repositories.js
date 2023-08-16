@@ -8,13 +8,11 @@ const Car_model_1 = __importDefault(require("../models/Car.model"));
 class CarRepository {
     static async getAveragePriceOfAllCars() {
         const allCars = await Car_model_1.default.find();
-        return (allCars.reduce((total, currentCar) => total + currentCar.price, 0) /
-            allCars.length);
+        return (allCars.reduce((total, currentCar) => total + currentCar.convertedCurrencies.dollar, 0) / allCars.length);
     }
     static async getAveragePriceByRegion(region) {
         const carsByRegion = await Car_model_1.default.find({ region });
-        return (carsByRegion.reduce((total, currentCar) => total + currentCar.price, 0) /
-            carsByRegion.length);
+        return (carsByRegion.reduce((total, currentCar) => total + currentCar.convertedCurrencies.dollar, 0) / carsByRegion.length);
     }
     static async getPastWeekViews(viewEvents) {
         const oneWeekAgoTimestamp = new Date().getTime() - 7 * 24 * 60 * 60 * 1000;
