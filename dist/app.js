@@ -26,16 +26,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./cronJobs/updateCurrencyRates");
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const mongoose = __importStar(require("mongoose"));
 const configs_1 = require("./configs/configs");
+const car_controller_1 = require("./controller/car.controller");
 const auth_middleware_1 = require("./middleware/auth.middleware");
 const car_routers_1 = __importDefault(require("./routers/car.routers"));
 const message_routes_1 = __importDefault(require("./routers/message.routes"));
 const user_routers_1 = __importDefault(require("./routers/user.routers"));
-const car_service_1 = require("./services/car.service");
 const app = (0, express_1.default)();
 app.use(express_1.default.static("public"));
 app.use(express_1.default.json());
@@ -47,13 +48,12 @@ app.get("*", auth_middleware_1.checkUser);
 app.use("/users", user_routers_1.default);
 app.use("/cars", car_routers_1.default);
 app.use("/messages", message_routes_1.default);
-app.listen(configs_1.configs.PORT, () => {
-    mongoose.connect(configs_1.configs.DB_URL);
-    console.log(`Server has started on PORT ${configs_1.configs.PORT} 🥸`);
-});
-app.get("/", car_service_1.carService.getAllCars);
+app.get("/", car_controller_1.getAllCarsController);
 app.get("/signup", (req, res) => res.render("signup"));
 app.get("/login", (req, res) => res.render("login"));
 app.get("/create-car", (req, res) => res.render("create_car_ad"));
 app.get("/create-manager", (req, res) => res.render("create_manager"));
-app.get("/create-manager", (req, res) => res.render("create_manager"));
+app.listen(configs_1.configs.PORT, () => {
+    mongoose.connect(configs_1.configs.DB_URL);
+    console.log(`Server has started on PORT ${configs_1.configs.PORT} 🥸`);
+});

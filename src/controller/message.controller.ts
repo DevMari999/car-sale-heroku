@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
-import { configs } from "../configs/configs";
-import Message from "../models/Message.model";
+import { messageService } from "../services/message.service";
 import { IMessage } from "../types/message.types";
 
 class MessageController {
@@ -13,28 +11,14 @@ class MessageController {
   ): Promise<Response<IMessage>> {
     try {
       const { header, content, recipientUserId } = req.body;
+      const senderUserId = res.locals.decodedToken.userId;
 
-      const token = req.cookies.token;
-
-      let decodedToken: {
-        userId: string;
-      };
-      try {
-        decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
-          userId: string;
-        };
-      } catch (error) {
-        return res.status(401).json({ error: "Invalid or expired token" });
-      }
-
-      const senderUserId = decodedToken.userId;
-
-      const newMessage = await Message.create({
+      const newMessage = await messageService.sendMessage(
+        senderUserId,
         header,
         content,
-        send_to: recipientUserId,
-        send_by: senderUserId,
-      });
+        recipientUserId,
+      );
 
       return res.status(201).json({ message: newMessage });
     } catch (e) {

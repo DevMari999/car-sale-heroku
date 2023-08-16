@@ -4,9 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const car_service_1 = require("../services/car.service");
+const car_controller_1 = require("../controller/car.controller");
+const token_middleware_1 = require("../middleware/token.middleware");
 const router = express_1.default.Router();
-router.post("/create-car", car_service_1.carService.createCar);
-router.get("/:carId", car_service_1.carService.getCarById);
-router.delete("/:carId", car_service_1.carService.deleteCarById);
+router.post("/create-car", token_middleware_1.validateTokenMiddleware, car_controller_1.createCarController);
+router.get("/:carId", car_controller_1.getCarByIdController);
+router.delete("/:carId", car_controller_1.deleteCarByIdController);
 exports.default = router;

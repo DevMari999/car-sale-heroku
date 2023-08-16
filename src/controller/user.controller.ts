@@ -1,43 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 
-import { configs } from "../configs/configs";
 import { UserRole } from "../enums/user.enum";
-import Message from "../models/Message.model";
-import User from "../models/User.model";
-import { IUser } from "../types/user.types";
+import { UserService } from "../services/user.service";
 
-class UserController {
+export class UserController {
   public async createManager(
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<Response> {
-    const token = req.cookies.token;
+    const decodedToken = res.locals.decodedToken;
 
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
+    if (decodedToken.role !== UserRole.ADMINISTRATOR) {
+      return res.status(403).json({ error: "Access denied" });
     }
 
     try {
-      const decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
-        userId: string;
-        role: UserRole;
-      };
-
-      if (decodedToken.role !== UserRole.ADMINISTRATOR) {
-        return res.status(403).json({ error: "Access denied" });
-      }
-
       const { username, email, password } = req.body;
-      await User.create({
-        username,
-        email,
-        password,
-        role: UserRole.MANAGER,
-        premium: true,
-      });
-
+      await UserService.createUser({ username, email, password });
       return res.status(201).json({ message: "Manager user created" });
     } catch (error) {
       console.error("Error creating manager user:", error);
@@ -50,44 +30,25 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response> {
+    const decodedToken = res.locals.decodedToken;
+
+    if (decodedToken.role !== UserRole.SELLER) {
+      return res
+        .status(403)
+        .json({ error: "Only sellers can upgrade to premium" });
+    }
+
     try {
-      const token = req.cookies.token;
-
-      let decodedToken: { userId: string; role: UserRole };
-      try {
-        decodedToken = jwt.verify(token, configs.JWT_SECRET) as {
-          userId: string;
-          role: UserRole;
-        };
-      } catch (error) {
-        res.status(401).json({ error: "Invalid or expired token" });
-      }
-
-      const userRole = decodedToken.role;
-
-      if (userRole !== UserRole.SELLER) {
-        res.status(403).json({ error: "Only sellers can upgrade to premium" });
-      }
-
-      const updatedUser = await User.findByIdAndUpdate(
+      const updatedUser = await UserService.upgradeUserToPremium(
         decodedToken.userId,
-        { premium: true },
-        { new: true },
       );
-
-      const updatedToken = jwt.sign(
-        {
-          userId: updatedUser._id,
-          role: updatedUser.role,
-          ads_count: updatedUser.ads_count,
-          premium: updatedUser.premium,
-        },
-        configs.JWT_SECRET,
-        {
-          expiresIn: "1d",
-        },
-      );
+      const updatedToken = UserService.createUpdatedToken({
+        userId: updatedUser._id,
+        role: updatedUser.role,
+        ads_count: updatedUser.ads_count,
+        premium: updatedUser.premium,
+      });
 
       res.cookie("token", updatedToken, { maxAge: 3600000, httpOnly: true });
       res.redirect("/");
@@ -97,38 +58,24 @@ class UserController {
       next(error);
     }
   }
+
   public async getUserById(
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<Response> {
+    const decodedToken = res.locals.decodedToken;
+
     try {
-      const token = req.cookies.token;
-
-      if (!token) {
-        res.status(401).json({ error: "Token not found" });
-      }
-
-      const decodedToken: { userId: string } = jwt.verify(
-        token,
-        configs.JWT_SECRET,
-      ) as { userId: string };
-
-      const userId = decodedToken.userId;
-
-      const user: IUser | null = await User.findById(userId);
-
+      const user = await UserService.getUserById(decodedToken.userId);
       if (!user) {
-        res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: "User not found" });
       }
 
-      const messages = await Message.find({ send_to: userId }).populate(
-        "send_by",
-        "username",
-      );
-
+      const messages = await UserService.getUserMessages(decodedToken.userId);
       res.render("account", { user, messages });
     } catch (error) {
+      console.error("Error retrieving user:", error);
       res.status(500).json({ error: "Failed to get user" });
       next(error);
     }

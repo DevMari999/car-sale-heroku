@@ -1,5 +1,33 @@
 <%- include('partials/header'); -%>
+<pre id="decoded-token-container"></pre>
 
+<script>
+    const decodedTokenContainer = document.getElementById("decoded-token-container");
+
+
+    const loginApiEndpoint = "/users/login";
+
+
+    fetch(loginApiEndpoint, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: "11@gmail.com", password: "1234567" }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            const token = data.token;
+            const decoded = JSON.parse(atob(token.split('.')[1]));
+
+
+            decodedTokenContainer.textContent = JSON.stringify(decoded, null, 2);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            decodedTokenContainer.textContent = "Error fetching token";
+        });
+</script>
 <header class="all-cars-main">
     <div class="header">
         <h2>ALL ADS</h2>
