@@ -30,7 +30,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const mongoose_1 = __importStar(require("mongoose"));
 const user_enum_1 = require("../enums/user.enum");
 const userSchema = new mongoose_1.Schema({
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: true },
     email: {
         type: String,
         required: true,

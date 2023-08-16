@@ -3,27 +3,26 @@
 <form action="/cars/create-car" method="POST">
     <h2>CREATE AN AD</h2>
     <label for="brand">Brand</label>
-    <input type="text" name="brand" required />
+    <input type="text" name="brand" required/>
     <label for="model">Model</label>
-    <input type="text" name="model" required />
-<!--    <div class="email error"></div>-->
+    <input type="text" name="model" required/>
     <label for="year">Year</label>
-    <input type="text" name="year" required />
-<!--    <div class="password error"></div>-->
+    <input type="text" name="year" required/>
     <div>
-    <label for="price">Price</label>
-    <input type="text" name="price" required />
-    <label for="currency">Currency</label>
-    <select class="currency" name="currency" required>
-        <option value="dollar">Dollar</option>
-        <option value="euro">Euro</option>
-        <option value="hryvnia">Hryvnia</option>
-    </select>
+        <label for="price">Price</label>
+        <input type="text" name="price" required/>
+        <label for="currency">Currency</label>
+        <select class="currency" name="currency" required>
+            <option value="dollar">Dollar</option>
+            <option value="euro">Euro</option>
+            <option value="hryvnia">Hryvnia</option>
+        </select>
         <label for="region">Region</label>
-        <input type="text" name="region" required />
-    <label for="price">Description</label>
+        <input type="text" name="region" required/>
+        <label for="price">Description</label>
         <textarea id="description" name="description" required></textarea>
-    <button type="submit">Create</button>
+        <div class="error"></div>
+        <button type="submit">Create</button>
     </div>
 </form>
 
@@ -31,6 +30,7 @@
 
 <script>
     const form = document.querySelector('form');
+    const errorDiv = document.querySelector('.error');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -46,9 +46,15 @@
         try {
             const res = await fetch('/cars/create-car', {
                 method: 'POST',
-                body: JSON.stringify({ brand, model, year, currency, price, description, region }),
+                body: JSON.stringify({brand, model, year, currency, price, description, region}),
                 headers: {'Content-Type': 'application/json'}
             });
+
+            if (!res.ok) {
+                errorDiv.textContent =  'Upgrade to premium to create more ads.';
+                return;
+            }
+
             const data = await res.json();
             console.log(data);
 
@@ -58,6 +64,7 @@
 
         } catch (err) {
             console.log(err);
+            errorDiv.textContent = 'An unexpected error occurred. Please try again later.';
         }
     });
 </script>

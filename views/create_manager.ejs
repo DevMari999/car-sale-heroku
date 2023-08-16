@@ -18,9 +18,14 @@
 
 <script>
     const form = document.querySelector('form');
+    const emailError = document.querySelector('.email.error');
+    const passwordError = document.querySelector('.password.error');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        emailError.textContent = '';
+        passwordError.textContent = '';
 
         const username = form.username.value;
         const email = form.email.value;
@@ -34,6 +39,20 @@
             });
             const data = await res.json();
             console.log(data);
+
+            if (data.errors) {
+                switch (data.errors.message) {
+                    case "Invalid email format":
+                        emailError.textContent = data.errors.message;
+                        break;
+                    case "Password must be at least 6 characters":
+                        passwordError.textContent = data.errors.message;
+                        break;
+                    default:
+
+                        break;
+                }
+            }
 
             if (data.message) {
                 alert(data.message);

@@ -1,17 +1,37 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCarByIdController = exports.getCarByIdController = exports.getAllCarsController = exports.createCarController = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const configs_1 = require("../configs/configs");
+const api_err_1 = __importDefault(require("../errors/api.err"));
 const car_service_1 = require("../services/car.service");
 const createCarController = async (req, res, next) => {
     try {
         const result = await car_service_1.carService.createCar(req.body, res.locals.decodedToken);
-        if (typeof result === "string") {
-            return res.status(400).json({ error: result });
+        if (result instanceof Error) {
+            throw result;
         }
-        return res.status(201).json({ car: result });
+        const { car, updatedUser } = result;
+        const newToken = jsonwebtoken_1.default.sign({
+            userId: updatedUser._id,
+            role: updatedUser.role,
+            ads_count: updatedUser.ads_count,
+            premium: updatedUser.premium,
+        }, configs_1.configs.JWT_SECRET, {
+            expiresIn: "1d",
+        });
+        res.cookie("token", newToken, { maxAge: 3600000, httpOnly: true });
+        return res.status(201).json({ car });
     }
-    catch (e) {
-        next(e);
+    catch (error) {
+        if (error instanceof api_err_1.default &&
+            error.message === "Only sellers are allowed to create cars") {
+            return res.status(error.statusCode).json({ error: error.message });
+        }
+        next(error);
     }
 };
 exports.createCarController = createCarController;

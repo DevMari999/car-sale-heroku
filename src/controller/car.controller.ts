@@ -1,25 +1,52 @@
 import { NextFunction, Request, Response } from "express";
+import jwt from "jsonwebtoken";
 
+import { configs } from "../configs/configs";
+import AppError from "../errors/api.err";
 import { carService } from "../services/car.service";
 
 export const createCarController = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<Response> => {
+): Promise<void | Response> => {
   try {
     const result = await carService.createCar(
       req.body,
       res.locals.decodedToken,
     );
 
-    if (typeof result === "string") {
-      return res.status(400).json({ error: result });
+    if (result instanceof Error) {
+      throw result;
     }
 
-    return res.status(201).json({ car: result });
-  } catch (e) {
-    next(e);
+    const { car, updatedUser } = result;
+
+    const newToken = jwt.sign(
+      {
+        userId: updatedUser._id,
+        role: updatedUser.role,
+        ads_count: updatedUser.ads_count,
+        premium: updatedUser.premium,
+      },
+      configs.JWT_SECRET,
+      {
+        expiresIn: "1d",
+      },
+    );
+
+    res.cookie("token", newToken, { maxAge: 3600000, httpOnly: true });
+
+    return res.status(201).json({ car });
+  } catch (error) {
+    if (
+      error instanceof AppError &&
+      error.message === "Only sellers are allowed to create cars"
+    ) {
+      return res.status(error.statusCode).json({ error: error.message });
+    }
+
+    next(error);
   }
 };
 

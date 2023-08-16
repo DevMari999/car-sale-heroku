@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import { configs } from "../configs/configs";
+import AppError from "../errors/api.err";
 import User from "../models/User.model";
 import { IUser } from "../types/user.types";
 
@@ -11,6 +12,11 @@ class AuthService {
 
     const ads_count = 0;
     const premium = false;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new AppError("Email already in use", 400);
+    }
 
     const newUser = await User.create({
       username,
@@ -41,13 +47,13 @@ class AuthService {
     const user = await User.findOne({ email });
 
     if (!user) {
-      throw new Error("Invalid credentials");
+      throw new AppError("Email is not registered", 404); // Use 404 for user not found
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      throw new Error("Invalid credentials");
+      throw new AppError("Invalid password", 401); // Use 401 for unauthorized
     }
 
     const token = jwt.sign(

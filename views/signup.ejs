@@ -4,17 +4,21 @@
   <h2>Sign up</h2>
   <label for="username">Username</label>
   <input type="text" name="username" required />
+
   <label for="email">Email</label>
   <input type="text" name="email" required />
   <div class="email error"></div>
+
   <label for="password">Password</label>
   <input type="password" name="password" required />
   <div class="password error"></div>
+
   <label for="role">Role</label>
   <select name="role" required>
     <option value="buyer">Buyer</option>
     <option value="seller">Seller</option>
   </select>
+
 
   <button type="submit">Sign up</button>
 </form>
@@ -23,9 +27,17 @@
 
 <script>
   const form = document.querySelector('form');
+  const emailError = document.querySelector('.email.error');
+  const passwordError = document.querySelector('.password.error');
+
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+
+    emailError.textContent = '';
+    passwordError.textContent = '';
+
 
     const username = form.username.value;
     const email = form.email.value;
@@ -38,13 +50,28 @@
         body: JSON.stringify({ username, email, password, role }),
         headers: {'Content-Type': 'application/json'}
       });
+
       const data = await res.json();
       console.log(data);
+
+      if (data.errors) {
+        switch (data.errors.message) {
+          case "Invalid email format":
+            emailError.textContent = data.errors.message;
+            break;
+          case "Password must be at least 6 characters":
+            passwordError.textContent = data.errors.message;
+            break;
+          default:
+
+            generalError.textContent = data.errors.message;
+            break;
+        }
+      }
 
       if (data.user) {
         location.assign('/');
       }
-
     } catch (err) {
       console.log(err);
     }

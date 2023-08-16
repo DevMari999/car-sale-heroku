@@ -1,4 +1,5 @@
 import { UserRole } from "../enums/user.enum";
+import AppError from "../errors/api.err";
 import Car from "../models/Car.model";
 import User from "../models/User.model";
 import { CarRepository } from "../repositories/car.repositories";
@@ -7,18 +8,21 @@ import { ConversionRate } from "../types/conversion.types";
 import { convertPrice, fetchConversionRates } from "./currency.service";
 
 class CarService {
-  public async createCar(body: any, decodedToken: any): Promise<ICar | string> {
+  public async createCar(
+    body: any,
+    decodedToken: any,
+  ): Promise<{ car: ICar; updatedUser: any }> {
     const { brand, model, price, currency, year, region, description } = body;
     const supportedCurrencies = ["dollar", "euro", "hryvnia"];
 
     if (!supportedCurrencies.includes(currency)) {
-      return "Invalid currency";
+      throw new AppError("Invalid currency", 400);
     }
 
     const conversionRates: ConversionRate[] = await fetchConversionRates();
 
     if (!conversionRates) {
-      return "Failed to fetch conversion rates";
+      throw new AppError("Failed to fetch conversion rates", 500);
     }
 
     const { convertedCurrencies, buyRates, saleRates } = convertPrice(
@@ -32,11 +36,11 @@ class CarService {
     const userPremium = decodedToken.premium;
 
     if (userRole === UserRole.BUYER) {
-      return "Only sellers are allowed to create cars";
+      throw new AppError("Only sellers are allowed to create cars", 403);
     }
 
     if (!userPremium && userAds >= 1) {
-      return "Free sellers can only create one ad";
+      throw new AppError("Free sellers can only create one ad", 403);
     }
 
     const newCar = await Car.create({
@@ -57,7 +61,7 @@ class CarService {
       },
     });
 
-    await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       decodedToken.userId,
       {
         $inc: { ads_count: 1 },
@@ -66,7 +70,7 @@ class CarService {
       { new: true },
     );
 
-    return newCar;
+    return { car: newCar, updatedUser };
   }
 
   public async getAllCars(): Promise<{

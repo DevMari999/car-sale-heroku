@@ -33,6 +33,7 @@ const express_1 = __importDefault(require("express"));
 const mongoose = __importStar(require("mongoose"));
 const configs_1 = require("./configs/configs");
 const car_controller_1 = require("./controller/car.controller");
+const globalErrorHandler_1 = __importDefault(require("./errors/globalErrorHandler"));
 const auth_middleware_1 = require("./middleware/auth.middleware");
 const car_routers_1 = __importDefault(require("./routers/car.routers"));
 const message_routes_1 = __importDefault(require("./routers/message.routes"));
@@ -53,6 +54,7 @@ app.get("/signup", (req, res) => res.render("signup"));
 app.get("/login", (req, res) => res.render("login"));
 app.get("/create-car", (req, res) => res.render("create_car_ad"));
 app.get("/create-manager", (req, res) => res.render("create_manager"));
+app.use(globalErrorHandler_1.default);
 app.listen(configs_1.configs.PORT, () => {
     mongoose.connect(configs_1.configs.DB_URL);
     console.log(`Server has started on PORT ${configs_1.configs.PORT} 🥸`);
