@@ -1,6 +1,6 @@
 # backend_project
 
-<b>administartor </b>
+<b>administrator </b>
 
 john@gmail.com
 john123
