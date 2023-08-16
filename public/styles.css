@@ -239,6 +239,9 @@ select {
     justify-content: center;
     align-items: flex-start;
     flex-direction: column;
+    margin-left: 30px;
+    margin-right: 30px;
+    text-align: justify;
 }
 .car h2 {
     font-size: 25px;
