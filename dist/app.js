@@ -55,7 +55,8 @@ app.get("/login", (req, res) => res.render("login"));
 app.get("/create-car", (req, res) => res.render("create_car_ad"));
 app.get("/create-manager", (req, res) => res.render("create_manager"));
 app.use(globalErrorHandler_1.default);
-app.listen(configs_1.configs.PORT, () => {
+const PORT = process.env.PORT || 5001;
+app.listen(PORT, () => {
     mongoose.connect(configs_1.configs.DB_URL);
-    console.log(`Server has started on PORT ${configs_1.configs.PORT} 🥸`);
+    console.log(`Server has started on PORT ${PORT} 🥸`);
 });

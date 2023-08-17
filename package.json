@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "rimraf dist && tsc-watch --onSuccess 'npm run watch'",
-    "watch": "nodemon 'src/app.ts' --watch './src'"
+    "start": "node dist/app.js",
+    "dev": "rimraf dist && tsc-watch --onSuccess 'npm run dev-watch'",
+    "dev-watch": "nodemon 'src/app.ts' --watch './src'",
+    "heroku-postbuild": "tsc"
   },
   "keywords": [],
   "author": "",
