@@ -16,6 +16,7 @@ body{
     flex-direction: column;
     padding-top: 150px;
     padding-bottom: 150px;
+    /*min-height: fit-content;*/
 }
 img {
     border-radius: 50%;
@@ -189,7 +190,7 @@ select {
     align-items: center;
     flex-direction: row;
     width: 100%;
-    height: 100%;
+
 
 }
 .welcome {
