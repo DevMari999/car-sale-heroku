@@ -1,5 +1,6 @@
 <%- include('partials/header'); -%>
 
+
 <form action="/cars/create-car" method="POST">
     <h2>CREATE AN AD</h2>
     <label for="brand">Brand</label>
@@ -59,7 +60,7 @@
             console.log(data);
 
             if (data.car) {
-                location.assign('/');
+                location.assign('/cars/shop');
             }
 
         } catch (err) {

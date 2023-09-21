@@ -52,6 +52,7 @@ nav {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     z-index: 999;
+    height: 65px;
 }
 
 nav ul {

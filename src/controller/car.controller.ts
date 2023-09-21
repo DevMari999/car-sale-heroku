@@ -93,7 +93,7 @@ export const deleteCarByIdController = async (
       return res.status(404).json({ error: result });
     }
 
-    res.redirect("/cars");
+    res.redirect("/cars/shop");
   } catch (error) {
     next(error);
   }
