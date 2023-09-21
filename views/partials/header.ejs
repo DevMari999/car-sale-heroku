@@ -14,18 +14,18 @@
             <% if (user.role === 'administrator') { %>
                 <li><a href="/create-manager">Create Manager</a></li>
             <% } %>
-                <% if (user.role !== 'buyer' ) { %>
-                    <li><a href="/create-car">advertise</a></li>
-                <% } %>
-                <% if (user.role === 'seller' && user.premium === false) { %>
-                    <li><a href="/users/upgrade">Upgrade to Premium</a></li>
-                <% } %>
-                <li class="welcome">Welcome, <%= user.username %></li>
+            <% if (user.role !== 'buyer' ) { %>
+                <li><a href="/create-car">advertise</a></li>
+            <% } %>
+            <% if (user.role === 'seller' && user.premium === false) { %>
+                <li><a href="/users/upgrade">Upgrade to Premium</a></li>
+            <% } %>
+            <li class="welcome">Welcome, <%= user.username %></li>
 
-                <% if ( user.premium === true) { %>
-                    <li class="premium">PREMIUM</li>
-                <% } %>
-                <li><a href="/users/:userId"><img src="/user_logo.jpg" alt="user_logo"></a></li>
+            <% if ( user.premium === true) { %>
+                <li class="premium">PREMIUM</li>
+            <% } %>
+            <li><a href="/users/:userId"><img src="/user-logo.png" alt="user_logo"></a></li>
             <li><a href="/users/logout">Log out</a></li>
         <% } else { %>
             <li><a href="/login">Log in</a></li>
