@@ -13,7 +13,6 @@ export const updateCarCurrencyValues = cron.schedule(
       const conversionRates = await fetchConversionRates();
 
       if (!conversionRates) {
-        console.error("Failed to fetch conversion rates for cron job");
         return;
       }
 
@@ -30,10 +29,6 @@ export const updateCarCurrencyValues = cron.schedule(
 
         await car.save();
       }
-
-      console.log("Updated all car currency values successfully");
-    } catch (error) {
-      console.error("Error in cron job:", error);
-    }
+    } catch (error) {}
   },
 );

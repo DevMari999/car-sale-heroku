@@ -16,7 +16,6 @@ const globalErrorHandler = (
     });
   }
 
-  console.error("An unexpected error occurred:", err);
   return res.status(500).json({
     errors: {
       message: "Internal server error",

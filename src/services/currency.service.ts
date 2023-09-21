@@ -10,7 +10,6 @@ export const fetchConversionRates = async () => {
     const conversionRates: ConversionRate[] = response.data;
     return conversionRates;
   } catch (error) {
-    console.error("Error fetching conversion rates:", error);
     return null;
   }
 };

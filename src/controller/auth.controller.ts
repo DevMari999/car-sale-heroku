@@ -19,7 +19,6 @@ class AuthController {
           .status(error.statusCode)
           .json({ errors: { message: error.message } });
       } else {
-        console.error(error);
         res.status(500).json({ errors: { message: "Internal Server Error" } });
       }
       next(error);
@@ -51,7 +50,6 @@ class AuthController {
             .json({ errors: { message: "Login failed" } });
         }
       } else {
-        console.error(error);
         res.status(500).json({ errors: { message: "Internal Server Error" } });
       }
       next(error);

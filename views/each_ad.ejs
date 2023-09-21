@@ -64,17 +64,14 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        console.log("Car deleted successfully");
                         return response.text();
                     } else {
-                        console.error("Failed to delete car");
                     }
                 })
                 .then(() => {
                     window.location.href = "/";
                 })
                 .catch(error => {
-                    console.error("Error:", error);
                 });
         }
     });
@@ -95,7 +92,6 @@
                 headers: {'Content-Type': 'application/json'}
             });
             const data = await res.json();
-            console.log(data);
 
             if (data.message) {
                 alert("message send");
@@ -103,7 +99,6 @@
             }
 
         } catch (err) {
-            console.log(err);
         }
     });
 </script>

@@ -26,7 +26,6 @@
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-
         emailError.textContent = '';
         passwordError.textContent = '';
         generalError.textContent = '';
@@ -42,7 +41,6 @@
             });
 
             const data = await res.json();
-            console.log(data);
 
             if (data.errors) {
                 switch (data.errors.message) {
@@ -59,11 +57,9 @@
                 }
             }
             if (data.user) {
-                console.log('Redirecting...');
                 location.assign('/');
             }
         } catch (err) {
-            console.log(err);
         }
     });
 </script>

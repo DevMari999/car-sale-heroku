@@ -20,7 +20,6 @@ export class UserController {
       await UserService.createUser({ username, email, password });
       return res.status(201).json({ message: "Manager user created" });
     } catch (error) {
-      console.error("Error creating manager user:", error);
       res.status(500).json({ error: "Failed to create manager user" });
       next(error);
     }
@@ -53,7 +52,6 @@ export class UserController {
       res.cookie("token", updatedToken, { maxAge: 3600000, httpOnly: true });
       res.redirect("/");
     } catch (error) {
-      console.error("Error upgrading to premium:", error);
       res.status(500).json({ error: "Failed to upgrade to premium" });
       next(error);
     }
@@ -75,7 +73,6 @@ export class UserController {
       const messages = await UserService.getUserMessages(decodedToken.userId);
       res.render("account", { user, messages });
     } catch (error) {
-      console.error("Error retrieving user:", error);
       res.status(500).json({ error: "Failed to get user" });
       next(error);
     }
