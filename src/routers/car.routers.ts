@@ -3,6 +3,7 @@ import express from "express";
 import {
   createCarController,
   deleteCarByIdController,
+  getAllCarsController,
   getCarByIdController,
 } from "../controller/car.controller";
 import { validateTokenMiddleware } from "../middleware/token.middleware";
@@ -15,6 +16,7 @@ router.post(
   validateTokenMiddleware,
   createCarController,
 );
+router.get("/shop", getAllCarsController);
 router.get("/:carId", getCarByIdController);
 router.delete("/:carId", deleteCarByIdController);
 export default router;

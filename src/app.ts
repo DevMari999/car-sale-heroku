@@ -6,7 +6,6 @@ import express from "express";
 import * as mongoose from "mongoose";
 
 import { configs } from "./configs/configs";
-import { getAllCarsController } from "./controller/car.controller";
 import globalErrorHandler from "./errors/globalErrorHandler";
 import { checkUser } from "./middleware/auth.middleware";
 import carRoutes from "./routers/car.routers";
@@ -28,14 +27,14 @@ app.use("/users", userRoutes);
 app.use("/cars", carRoutes);
 app.use("/messages", messageRoutes);
 
-app.get("/", getAllCarsController);
+app.get("/", (req, res) => res.render("home"));
 app.get("/signup", (req, res) => res.render("signup"));
 app.get("/login", (req, res) => res.render("login"));
 app.get("/create-car", (req, res) => res.render("create_car_ad"));
 app.get("/create-manager", (req, res) => res.render("create_manager"));
 app.use(globalErrorHandler);
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   mongoose.connect(configs.DB_URL);
   console.log(`Server has started on PORT ${PORT} 🥸`);

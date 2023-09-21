@@ -13,7 +13,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: 120px;
+    padding-top: 130px;
     padding-bottom: 120px;
     background-image: url("./background.jpg");
     background-size: cover;
@@ -302,4 +302,23 @@ footer {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     height: 45px;
+}
+
+.home {
+    height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-header {
+    font-size: 3em;
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
+    padding: 20px 30px;
+    transition: ease-in-out 0.5s;
+}
+
+.home-header:hover {
+    transform: scale(1.1);
 }
