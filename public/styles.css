@@ -258,6 +258,7 @@ select {
     flex-direction: row;
     align-items: center;
     padding: 10px !important;
+    margin: 15px;
 }
 
 .car {
@@ -306,7 +307,7 @@ footer {
 }
 
 .home {
-    height: 75vh;
+    height: 70vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -322,4 +323,7 @@ footer {
 
 .home-header:hover {
     transform: scale(1.1);
+}
+.form {
+    margin-top: 10vh;
 }

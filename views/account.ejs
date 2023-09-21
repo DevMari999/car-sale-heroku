@@ -1,12 +1,8 @@
 <%- include('partials/header'); -%>
 
-<header class="user">
-    <h2>Welcome, <%= user.username %></h2>
-</header>
-
 <% if (messages && messages.length > 0) { %>
     <section class="messages-main">
-        <h3>Your Messages</h3>
+        <h1>Your Messages</h1>
         <% messages.forEach(message => { %>
             <div class="messages">
                 <div class="message-element">
