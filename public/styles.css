@@ -249,7 +249,7 @@ select {
     min-height: 270px;
     display: flex;
     justify-content: center;
-    padding:35px;
+    padding:45px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.72);
     border: solid 1px rgba(0, 0, 0, 0.04);
 }
@@ -261,7 +261,7 @@ select {
 }
 
 .car {
-    flex: 0 0 calc(25% - 5px);
+    flex: 0 0 calc(27% - 5px);
     flex-direction: column;
     align-items: flex-start;
 }
