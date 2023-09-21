@@ -1,6 +1,3 @@
-note
-.env file was pushed for study/project review purpos
-
 https://car-sale-platform-c3fa3b2c4642.herokuapp.com/
 ---
 - **administrator email:** john@gmail.com
