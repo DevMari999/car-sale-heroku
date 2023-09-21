@@ -19,6 +19,7 @@ body {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
+    background-color: #0a0a1f;
 }
 
 
@@ -89,7 +90,7 @@ form h2 {
 }
 
 h2 {
-    font-size: 20px;
+    font-size: 25px;
 }
 
 p {
@@ -98,13 +99,13 @@ p {
 
 form {
     width: 500px;
-    margin: 50px auto;
+    margin: 10px auto;
     padding: 30px;
     border: solid 1px rgba(0, 0, 0, 0.04);
     border-radius: 10px;
     backdrop-filter: blur(35px);
     -webkit-backdrop-filter: blur(35px);
-    box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.72);
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.65);
 }
 
 input, select {
@@ -173,7 +174,7 @@ header img {
 }
 
 .all-cars-header {
-    font-size: 1.2em;
+    font-size: 1.8em;
     margin-bottom: 15px;
 }
 
@@ -212,7 +213,6 @@ select {
     border: 1px solid #ddd;
     padding: 7px;
     border-radius: 4px;
-    /*background: white;*/
     font-size: 0.8em;
 }
 
