@@ -1,6 +1,6 @@
 
 ![cars-screenshot-1](https://github.com/DevMari999/cars-platform/assets/135366781/ad1ff520-ac42-4d71-896d-7d298d49e9c4)
-[
+
 https://node-cars-platform-a50b2bbce808.herokuapp.com/
 ---
 - **administrator email:** john@gmail.com
