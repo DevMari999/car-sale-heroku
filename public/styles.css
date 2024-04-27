@@ -20,6 +20,7 @@ body {
     background-position: center;
     background-attachment: fixed;
     background-color: #0a0a1f;
+    min-width: 1300px;
 }
 
 
@@ -54,6 +55,8 @@ nav {
     -webkit-backdrop-filter: blur(25px);
     z-index: 999;
     height: 65px;
+    min-width: 1300px;
+    overflow: auto;
 }
 
 nav ul {
@@ -166,6 +169,7 @@ button {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+
 }
 
 header img {
@@ -304,6 +308,7 @@ footer {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     height: 45px;
+    min-width: 1300px;
 }
 
 .home {
