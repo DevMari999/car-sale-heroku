@@ -253,11 +253,11 @@ select {
     padding: 45px 60px;
     box-shadow: 7px 7px 7px rgba(0, 0, 0, 0.72);
     border: solid 1px rgba(0, 0, 0, 0.04);
-    min-width: 400px;
+    min-width: 350px;
 }
 
 .car {
-    min-width: 400px;
+    min-width: 350px;
 }
 
 .messages {
@@ -326,6 +326,7 @@ footer {
     -webkit-backdrop-filter: blur(35px);
     padding: 20px 30px;
     transition: ease-in-out 0.5s;
+    min-width: 350px;
 }
 
 .home-header:hover {
